@@ -1,15 +1,31 @@
 services:
   app:
     build: .
-    container_name: api_encuestas
+    container_name: api-encuestas
     restart: always
     ports:
       - "9501:3001"
     environment:
-      - DB_HOST=localhost
+      - DB_HOST=basededatos-encuestas
       - DB_NAME=encuestas
       - DB_USER=innovacion
       - DB_PASSWORD=innovacion123
       - JWT_SECRET=1nn4v1c34nd3g3t1l
-    working_dir: /usr/src/app
-    command: npm run dev
+    depends_on:
+      - basededatos-encuestas
+
+  basededatos-encuestas:
+    image: mysql:latest
+    container_name: basededatos-encuestas
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: innovacion123*
+      MYSQL_DATABASE: encuestas
+      MYSQL_USER: innovacion
+      MYSQL_PASSWORD: innovacion123
+    volumes:
+      - mysql_data_encuestas:/var/lib/mysql
+
+volumes:
+  mysql_data_encuestas:
